@@ -4,6 +4,12 @@ import pickle
 from model.dataset_loader import load_dataset
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import (
+    accuracy_score, roc_auc_score, precision_score,
+    recall_score, f1_score, matthews_corrcoef, confusion_matrix
+)
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 st.set_page_config(page_title="ML Classification App", layout="wide")
 st.title("Machine Learning Model Deployment")
