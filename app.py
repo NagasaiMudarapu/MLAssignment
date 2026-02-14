@@ -22,7 +22,7 @@ st.sidebar.header("Model Configuration")
 model_options = [
     "Logistic Regression",
     "Decision Tree",
-    "K-Nearest Neighbor",
+    "K Nearest Neighbor",
     "Naive Bayes",
     "Random Forest",
     "XGBoost"
@@ -35,7 +35,6 @@ try:
     sample_csv = pd.read_csv("./data/test_dataset.csv")
     csv_data = sample_csv.to_csv(index=False).encode('utf-8')
 
-    # 2. Create the Download Button
     st.sidebar.download_button(
         label="📥 Download Sample Test Data",
         data=csv_data,
@@ -48,7 +47,6 @@ except FileNotFoundError:
     st.warning("⚠️ sample_test_data.csv not found. Please upload your own.")
 
 if uploaded_file is not None:
-    # Load data
     df = pd.read_csv(uploaded_file)
     st.write("### Data Preview")
     st.dataframe(df.head())
@@ -63,12 +61,7 @@ if uploaded_file is not None:
 
     X, Y, df = load_dataset('./data/test_dataset.csv')
 
-    #TODO: Set the scalers afterwards
-#     scaler = StandardScaler()
-#     X_scaled = scaler.transform(X)
-
     y_pred = loaded_model.predict(X)
-
     y_prob = loaded_model.predict_proba(X)[:, 1]
 
     acc = accuracy_score(Y, y_pred)
@@ -87,7 +80,6 @@ if uploaded_file is not None:
     col3.metric("F1 Score", f"{f1:.4f}")
     col3.metric("MCC Score", f"{mcc:.4f}")
 
-    # --- 7. VISUALIZATION (Confusion Matrix) [cite: 94] ---
     st.write("### Confusion Matrix")
     cm = confusion_matrix(Y, y_pred)
 
