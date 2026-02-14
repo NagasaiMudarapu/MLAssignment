@@ -43,7 +43,41 @@ if uploaded_file is not None:
     st.dataframe(df.head())
 
     st.success("File upload successfully!")
+
+    filename = f"model/{selected_model_name.replace(' ', '_').lower()}.pkl"
+    with open(filename, 'rb') as file:
+        loaded_model = pickle.load(file)
+
     st.success(f"Successfully loaded: **{selected_model_name}**")
+
+    X, Y, df = load_dataset('./data/test_dataset.csv')
+    scaler = StandardScaler()
+
+    X_scaled = scaler.transform(X)
+
+    y_pred = loaded_model.predict(X_scaled)
+
+    y_prob = loaded_model.predict_proba(X_scaled)[:, 1]
+
+    metrics = {
+        "Accuracy": accuracy_score(Y, y_pred),
+        "AUC Score": roc_auc_score(Y, y_prob),
+        "Precision": precision_score(Y, y_pred),
+        "Recall": recall_score(Y, y_pred),
+        "F1 Score": f1_score(Y, y_pred),
+        "MCC (Matthews Correlation)": matthews_corrcoef(Y, y_pred)
+    }
+
+    for metric, value in metrics.items():
+        print(f"{metric:<25}: {value:.4f}")
+
+    cm = confusion_matrix(Y, y_pred)
+    plt.figure(figsize=(6, 5))
+    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', cbar=False)
+    plt.xlabel('Predicted')
+    plt.ylabel('Actual')
+    plt.title('Confusion Matrix')
+    plt.show()
 
 else:
     st.info("Please upload a CSV dataset to proceed.")

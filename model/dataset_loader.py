@@ -2,7 +2,7 @@ import pandas as pd
 import os
 
 # Default configuration
-DEFAULT_FILENAME = 'qsar-biodeg.csv'
+DEFAULT_FILENAME = '../data/qsar-biodeg.csv'
 DEFAULT_TARGET_COL = 'Class'
 
 def load_dataset(file_path=None, target_column=None):
