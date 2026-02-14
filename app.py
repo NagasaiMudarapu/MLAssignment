@@ -5,6 +5,7 @@ import pickle
 from model.dataset_loader import load_dataset
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LogisticRegression
+from sklearn.preprocessing import LabelEncoder
 from sklearn.metrics import (
     accuracy_score, roc_auc_score, precision_score,
     recall_score, f1_score, matthews_corrcoef, confusion_matrix
@@ -60,6 +61,10 @@ if uploaded_file is not None:
     st.success(f"Successfully loaded: **{selected_model_name}**")
 
     X, Y, df = load_dataset('./data/test_dataset.csv')
+
+    if selected_model_name == 'XGBoost':
+        le = LabelEncoder()
+        Y = le.fit_transform(Y)
 
     y_pred = loaded_model.predict(X)
     y_prob = loaded_model.predict_proba(X)[:, 1]
