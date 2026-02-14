@@ -1,6 +1,9 @@
 import streamlit as st
 import pandas as pd
 import pickle
+from model.dataset_loader import load_dataset
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LogisticRegression
 
 st.set_page_config(page_title="ML Classification App", layout="wide")
 st.title("Machine Learning Model Deployment")
