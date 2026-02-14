@@ -55,13 +55,14 @@ if uploaded_file is not None:
     st.success(f"Successfully loaded: **{selected_model_name}**")
 
     X, Y, df = load_dataset('./data/test_dataset.csv')
-    scaler = StandardScaler()
 
-    X_scaled = scaler.transform(X)
+    #TODO: Set the scalers afterwards
+#     scaler = StandardScaler()
+#     X_scaled = scaler.transform(X)
 
-    y_pred = loaded_model.predict(X_scaled)
+    y_pred = loaded_model.predict(X)
 
-    y_prob = loaded_model.predict_proba(X_scaled)[:, 1]
+    y_prob = loaded_model.predict_proba(X)[:, 1]
 
     metrics = {
         "Accuracy": accuracy_score(Y, y_pred),
