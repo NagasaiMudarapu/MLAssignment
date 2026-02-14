@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import numpy as np
 import pickle
 from model.dataset_loader import load_dataset
 from sklearn.preprocessing import StandardScaler
@@ -70,25 +71,33 @@ if uploaded_file is not None:
 
     y_prob = loaded_model.predict_proba(X)[:, 1]
 
-    metrics = {
-        "Accuracy": accuracy_score(Y, y_pred),
-        "AUC Score": roc_auc_score(Y, y_prob),
-        "Precision": precision_score(Y, y_pred),
-        "Recall": recall_score(Y, y_pred),
-        "F1 Score": f1_score(Y, y_pred),
-        "MCC (Matthews Correlation)": matthews_corrcoef(Y, y_pred)
-    }
+    acc = accuracy_score(Y, y_pred)
+    auc = roc_auc_score(Y, y_prob) if len(np.unique(Y)) == 2 else 0 # Handle binary only for AUC
+    prec = precision_score(Y, y_pred, average='weighted')
+    rec = recall_score(Y, y_pred, average='weighted')
+    f1 = f1_score(Y, y_pred, average='weighted')
+    mcc = matthews_corrcoef(Y, y_pred)
 
-    for metric, value in metrics.items():
-        print(f"{metric:<25}: {value:.4f}")
+    st.write("### Evaluation Metrics")
+    col1, col2, col3 = st.columns(3)
+    col1.metric("Accuracy", f"{acc:.4f}")
+    col1.metric("AUC Score", f"{auc:.4f}")
+    col2.metric("Precision", f"{prec:.4f}")
+    col2.metric("Recall", f"{rec:.4f}")
+    col3.metric("F1 Score", f"{f1:.4f}")
+    col3.metric("MCC Score", f"{mcc:.4f}")
 
+    # --- 7. VISUALIZATION (Confusion Matrix) [cite: 94] ---
+    st.write("### Confusion Matrix")
     cm = confusion_matrix(Y, y_pred)
-    plt.figure(figsize=(6, 5))
-    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', cbar=False)
-    plt.xlabel('Predicted')
-    plt.ylabel('Actual')
-    plt.title('Confusion Matrix')
-    plt.show()
+
+    fig, ax = plt.subplots()
+    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', ax=ax)
+    ax.set_xlabel('Predicted')
+    ax.set_ylabel('Actual')
+    st.pyplot(fig)
+
+    st.success("Model Predicted")
 
 else:
     st.info("Please upload a CSV dataset to proceed.")
